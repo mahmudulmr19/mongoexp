@@ -3,12 +3,12 @@ import { Response } from "express";
 // Define response types
 interface BaseResponse {
   success: boolean;
-  message: string;
+  message?: string;
 }
 
 interface SuccessResponse<T> extends BaseResponse {
   success: true;
-  data: T;
+  data?: T;
 }
 
 interface ErrorResponse extends BaseResponse {
