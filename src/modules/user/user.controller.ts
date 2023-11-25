@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "@/helpers/response";
 import { userZodSchema } from "./user.validator";
 import { userService } from "./user.service";
@@ -45,7 +45,7 @@ const createUser = async (req: Request, res: Response) => {
   }
 };
 
-const getAllUsers = async (req: Request, res: Response) => {
+const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const users = await userService.getAllUserFromDB();
 
@@ -57,22 +57,48 @@ const getAllUsers = async (req: Request, res: Response) => {
         data: users,
       },
     });
-  } catch (error: any) {
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getSingleUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.params.userId;
+    const user = await userService.getSingleUserFromDB(userId);
+    if (!user) {
+      sendResponse({
+        res,
+        response: {
+          success: false,
+          message: "User not found",
+          error: {
+            code: 404,
+            description: "User not found",
+          },
+        },
+      });
+    }
+
     sendResponse({
       res,
       response: {
-        success: false,
-        message: "Something went wrong!",
-        error: {
-          code: 400,
-          description: error.message,
-        },
+        success: true,
+        message: "User fetched successfully!",
+        data: user,
       },
     });
+  } catch (error) {
+    next(error);
   }
 };
 
 export const userController = {
   createUser,
   getAllUsers,
+  getSingleUser,
 };
