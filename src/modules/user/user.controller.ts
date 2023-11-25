@@ -232,6 +232,43 @@ const addProductToOrder = async (
   }
 };
 
+const getSingleUserAllOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.params.userId;
+    const user = await userService.getAllUserOrdersFromDB(userId);
+    if (!user) {
+      return sendResponse({
+        res,
+        response: {
+          success: false,
+          message: "User not found",
+          error: {
+            code: 404,
+            description: "User not found",
+          },
+        },
+      });
+    }
+    const orders = user.orders;
+    sendResponse({
+      res,
+      response: {
+        success: true,
+        message: "Order fetched successfully!",
+        data: {
+          orders,
+        },
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const userController = {
   createUser,
   deleteUser,
@@ -239,4 +276,5 @@ export const userController = {
   getSingleUser,
   updateUser,
   addProductToOrder,
+  getSingleUserAllOrders,
 };
