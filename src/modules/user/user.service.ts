@@ -69,6 +69,18 @@ const getAllUserOrdersFromDB = async (userId: string) => {
   return result;
 };
 
+const getTotalPriceOfOrdersFromDB = async (userId: string) => {
+  const user = await UserModel.findOne({ userId });
+  const orders = user?.orders;
+  if (orders) {
+    return orders.reduce(
+      (total, order) => total + order.price * order.quantity,
+      0
+    );
+  }
+  return 0;
+};
+
 export const userService = {
   createUserIntoDB,
   getAllUserFromDB,
@@ -77,4 +89,5 @@ export const userService = {
   deleteUserFromDB,
   addProductToUserOrder,
   getAllUserOrdersFromDB,
+  getTotalPriceOfOrdersFromDB,
 };
