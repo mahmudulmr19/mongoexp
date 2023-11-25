@@ -74,7 +74,7 @@ const getSingleUser = async (
     const userId = req.params.userId;
     const user = await userService.getSingleUserFromDB(userId);
     if (!user) {
-      sendResponse({
+      return sendResponse({
         res,
         response: {
           success: false,

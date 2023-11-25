@@ -27,7 +27,20 @@ const getAllUserFromDB = async () => {
 };
 
 const getSingleUserFromDB = async (userId: string) => {
-  const user = await UserModel.findOne({ userId });
+  const user = await UserModel.findOne(
+    { userId },
+    {
+      userId: 1,
+      username: 1,
+      fullName: 1,
+      age: 1,
+      email: 1,
+      isActive: 1,
+      hobbies: 1,
+      address: 1,
+      _id: 0,
+    }
+  );
   return user;
 };
 
