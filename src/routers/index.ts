@@ -16,10 +16,13 @@ router.get("/", async (req: Request, res: Response) => {
       response: {
         success: true,
         data: {
-          country: ipInfo?.country,
-          regionName: ipInfo?.regionName,
-          city: ipInfo?.city,
-          zip: ipInfo?.zip,
+          requestInfo: {
+            requestId: crypto.randomUUID(),
+            country: ipInfo?.country,
+            regionName: ipInfo?.regionName,
+            city: ipInfo?.city,
+            zip: ipInfo?.zip,
+          },
         },
         message: "Hello from mongoexp",
       },
