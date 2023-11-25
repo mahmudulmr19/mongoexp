@@ -17,6 +17,7 @@ interface ErrorResponse extends BaseResponse {
     code: number;
     description: string;
   };
+  errors?: any;
 }
 
 // Combined response type using discriminated unions
@@ -41,7 +42,7 @@ export function sendResponse<T>({
     res.status(200).json({ success, message, data });
   } else {
     const errorResponse = response as ErrorResponse;
-    const { error } = errorResponse;
-    res.status(error.code).json({ success, message, error });
+    const { error, errors } = errorResponse;
+    res.status(error.code).json({ success, message, error, errors });
   }
 }
