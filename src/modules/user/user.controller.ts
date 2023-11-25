@@ -97,8 +97,40 @@ const getSingleUser = async (
   }
 };
 
+const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.params.userId;
+    const result = await userService.deleteUserFromDB(userId);
+    if (result.deletedCount !== 1) {
+      return sendResponse({
+        res,
+        response: {
+          success: false,
+          message: "User not found",
+          error: {
+            code: 404,
+            description: "User not found",
+          },
+        },
+      });
+    }
+
+    sendResponse({
+      res,
+      response: {
+        success: true,
+        message: "User deleted successfully!",
+        data: null,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const userController = {
   createUser,
+  deleteUser,
   getAllUsers,
   getSingleUser,
 };
