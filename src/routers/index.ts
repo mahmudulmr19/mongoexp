@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { sendResponse } from "@/helpers/response";
 import axios from "axios";
 import userRoute from "@/modules/user/user.route";
+import globalErrorHandler from "@/helpers/globalErrorhandler";
 
 // declare router
 const router = express.Router();
@@ -46,5 +47,6 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 router.use("/api/users", userRoute);
+router.use(globalErrorHandler);
 
 export default router;
