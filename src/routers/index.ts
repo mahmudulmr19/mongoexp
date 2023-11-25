@@ -1,6 +1,9 @@
 import express, { Request, Response } from "express";
 import { sendResponse } from "@/helpers/response";
 import axios from "axios";
+import userRoute from "@/modules/user/user.route";
+
+// declare router
 const router = express.Router();
 
 // test index route
@@ -41,5 +44,7 @@ router.get("/", async (req: Request, res: Response) => {
     });
   }
 });
+
+router.use("/api/users", userRoute);
 
 export default router;
