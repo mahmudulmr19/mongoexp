@@ -30,4 +30,5 @@ export const userZodSchema = z.object({
   orders: z.array(orderSchema).optional(),
 });
 
+export type Order = z.infer<typeof orderSchema>;
 export type User = z.infer<typeof userZodSchema>;
