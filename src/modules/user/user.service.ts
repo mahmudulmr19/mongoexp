@@ -26,9 +26,15 @@ const deleteUserFromDB = async (userId: string) => {
   return result;
 };
 
+const updateUserFromDB = async (userId: string, userData: User) => {
+  const result = await UserModel.updateOne({ userId }, { $set: userData });
+  return result;
+};
+
 export const userService = {
   createUserIntoDB,
   getAllUserFromDB,
   getSingleUserFromDB,
+  updateUserFromDB,
   deleteUserFromDB,
 };

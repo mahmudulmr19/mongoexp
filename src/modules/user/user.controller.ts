@@ -128,9 +128,58 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.params.userId;
+    const user = await userService.getSingleUserFromDB(userId);
+    if (!user) {
+      sendResponse({
+        res,
+        response: {
+          success: false,
+          message: "User not found",
+          error: {
+            code: 404,
+            description: "User not found",
+          },
+        },
+      });
+    }
+
+    const parsedUser = userZodSchema.safeParse(req.body);
+    if (!parsedUser.success) {
+      return sendResponse({
+        res,
+        response: {
+          success: false,
+          message: "Failed to parse user data",
+          error: {
+            code: 400,
+            description: "Failed to parse user data",
+          },
+          errors: parsedUser.error.errors,
+        },
+      });
+    }
+    await userService.updateUserFromDB(userId, parsedUser.data);
+    const result = await userService.getSingleUserFromDB(userId);
+    sendResponse({
+      res,
+      response: {
+        success: true,
+        message: "User updated successfully!",
+        data: result,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const userController = {
   createUser,
   deleteUser,
   getAllUsers,
   getSingleUser,
+  updateUser,
 };
