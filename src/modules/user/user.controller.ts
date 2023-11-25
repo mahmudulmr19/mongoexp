@@ -22,15 +22,16 @@ const createUser = async (req: Request, res: Response) => {
     }
 
     const result = await userService.createUserIntoDB(parsedUser.data);
-    const userWithoutOrders = { ...result.toJSON() };
-    delete userWithoutOrders.orders;
+    const finalResult = { ...result.toJSON() };
+    delete finalResult.orders;
+    delete finalResult.id;
 
     sendResponse({
       res,
       response: {
         success: true,
         message: "User created successfully!",
-        data: userWithoutOrders,
+        data: finalResult,
       },
     });
   } catch (error: any) {
