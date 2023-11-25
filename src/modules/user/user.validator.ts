@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const userSchema = z.object({
+export const userZodSchema = z.object({
   userId: z.number({ required_error: "userId is required" }),
   username: z.string({ required_error: "username is required" }),
   password: z.string({ required_error: "password is required" }),
@@ -21,4 +21,4 @@ export const userSchema = z.object({
   }),
 });
 
-export type User = z.infer<typeof userSchema>;
+export type User = z.infer<typeof userZodSchema>;
