@@ -1,5 +1,6 @@
 import { Schema, Document, model } from "mongoose";
 import { User } from "./user.validator";
+import bcrypt from "bcrypt";
 
 const userSchema = new Schema<User & Document>({
   userId: {
@@ -61,3 +62,9 @@ const userSchema = new Schema<User & Document>({
 });
 
 export const UserModel = model<User & Document>("User", userSchema);
+
+// pre save middleware/ hook : will work on create()  save()
+userSchema.pre("save", async function (next) {
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
