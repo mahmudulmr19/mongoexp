@@ -61,10 +61,26 @@ const userSchema = new Schema<User & Document>({
   },
 });
 
-export const UserModel = model<User & Document>("User", userSchema);
-
 // pre save middleware/ hook : will work on create()  save()
 userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
+
+// post save middleware / hook
+userSchema.post("save", function (doc, next) {
+  doc.password = "";
+  next();
+});
+
+// Customizing toJSON to exclude the password field
+userSchema.set("toJSON", {
+  transform: function (doc, ret) {
+    ret.id = ret._id; // Map _id to id
+    delete ret._id;
+    delete ret.__v;
+    delete ret.password; // Exclude password from the returned JSON
+  },
+});
+
+export const UserModel = model<User & Document>("User", userSchema);
