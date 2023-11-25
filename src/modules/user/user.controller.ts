@@ -6,18 +6,8 @@ import { userService } from "./user.service";
 const createUser = async (req: Request, res: Response) => {
   try {
     const parsedUser = userZodSchema.safeParse(req.body);
-    if (parsedUser.success) {
-      const result = await userService.createUserIntoDB(parsedUser.data);
-      sendResponse({
-        res,
-        response: {
-          success: true,
-          message: "User created successfully!",
-          data: result,
-        },
-      });
-    } else {
-      sendResponse({
+    if (!parsedUser.success) {
+      return sendResponse({
         res,
         response: {
           success: false,
@@ -30,6 +20,19 @@ const createUser = async (req: Request, res: Response) => {
         },
       });
     }
+
+    const result = await userService.createUserIntoDB(parsedUser.data);
+    const userWithoutOrders = { ...result.toJSON() };
+    delete userWithoutOrders.orders;
+
+    sendResponse({
+      res,
+      response: {
+        success: true,
+        message: "User created successfully!",
+        data: userWithoutOrders,
+      },
+    });
   } catch (error: any) {
     sendResponse({
       res,
