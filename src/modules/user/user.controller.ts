@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "@/helpers/response";
-import { userZodSchema } from "./user.validator";
+import { orderSchema, userZodSchema } from "./user.validator";
 import { userService } from "./user.service";
 
 const createUser = async (req: Request, res: Response) => {
@@ -180,10 +180,63 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const addProductToOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.params.userId;
+    const user = await userService.getSingleUserFromDB(userId);
+    if (!user) {
+      sendResponse({
+        res,
+        response: {
+          success: false,
+          message: "User not found",
+          error: {
+            code: 404,
+            description: "User not found",
+          },
+        },
+      });
+    }
+
+    const parsedOrder = orderSchema.safeParse(req.body);
+    if (!parsedOrder.success) {
+      return sendResponse({
+        res,
+        response: {
+          success: false,
+          message: "Failed to parse order data",
+          error: {
+            code: 400,
+            description: "Failed to parse order data",
+          },
+          errors: parsedOrder.error.errors,
+        },
+      });
+    }
+
+    await userService.addProductToUserOrder(userId, parsedOrder.data);
+    sendResponse({
+      res,
+      response: {
+        success: true,
+        message: "Order created successfully!",
+        data: null,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const userController = {
   createUser,
   deleteUser,
   getAllUsers,
   getSingleUser,
   updateUser,
+  addProductToOrder,
 };

@@ -1,5 +1,5 @@
 import { UserModel } from "./user.model";
-import { User } from "./user.validator";
+import { Order, User } from "./user.validator";
 
 const createUserIntoDB = async (usersData: User) => {
   const existUser = await UserModel.findOne({ userId: usersData.userId });
@@ -54,10 +54,21 @@ const updateUserFromDB = async (userId: string, userData: User) => {
   return result;
 };
 
+const addProductToUserOrder = async (userId: string, productData: Order) => {
+  const result = await UserModel.updateOne(
+    { userId },
+    {
+      $push: { orders: productData },
+    }
+  );
+  return result;
+};
+
 export const userService = {
   createUserIntoDB,
   getAllUserFromDB,
   getSingleUserFromDB,
   updateUserFromDB,
   deleteUserFromDB,
+  addProductToUserOrder,
 };
