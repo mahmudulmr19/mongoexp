@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+export const orderSchema = z.object({
+  productName: z.string({ required_error: "product name is required" }),
+  price: z.number({ required_error: "price is required" }),
+  quantity: z.number({ required_error: "quantity is required" }),
+});
+
 export const userZodSchema = z.object({
   userId: z.number({ required_error: "userId is required" }),
   username: z.string({ required_error: "username is required" }),
@@ -21,6 +27,7 @@ export const userZodSchema = z.object({
     city: z.string({ required_error: "city is required" }),
     country: z.string({ required_error: "country is required" }),
   }),
+  orders: z.array(orderSchema).optional(),
 });
 
 export type User = z.infer<typeof userZodSchema>;

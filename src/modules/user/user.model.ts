@@ -61,6 +61,16 @@ const userSchema = new Schema<User & Document>({
       required: [true, "country is required"],
     },
   },
+  orders: {
+    type: [
+      {
+        productName: String,
+        price: Number,
+        quantity: Number,
+      },
+    ],
+    default: [],
+  },
 });
 
 // pre save middleware/ hook : will work on create()  save()
